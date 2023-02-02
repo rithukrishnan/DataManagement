@@ -1,0 +1,265 @@
+-- DM Final Project - Transportation Team
+-- DDL Script to Implement Data Warehouse
+
+
+-- 1. DROP section
+-- 2. CREATE section
+-- 3. Add PKs, FKs, NULLs, UNIQUEs, DEFAULTs, and Constraints
+-- 4. Create sequences
+-- 5. Implement sequences
+-- 8. Create/Implement Indexes
+-- 7. Make sure constraints/sequences work properly
+-- 9. Make sure script runs repeatedly without issue
+
+
+-------------------------------------------------------------------------------
+
+-- Drop Statement to Allow Repeated Running of Script
+
+drop table ticket_baggage;
+drop table baggage_transaction;
+drop table ticket_transaction;
+drop table ticket;
+drop table flight;
+drop table flight_route;
+drop table reservation_passengers;
+drop table reservation;
+drop table baggage;
+drop table maint_transaction;
+drop table inv_location;
+drop table customer;
+drop table maint_item;
+drop table employee;
+drop table plane;
+drop table location;
+
+drop sequence customer_id_seq;
+drop sequence maint_item_id_seq;
+drop sequence employee_id_seq;
+drop sequence plane_id_seq;
+drop sequence location_id_seq;
+drop sequence maint_transaction_id_seq;
+drop sequence baggage_id_seq;
+drop sequence reservation_id_seq;
+drop sequence flight_route_id_seq;
+drop sequence flight_id_seq;
+drop sequence ticket_id_seq;
+drop sequence ticket_transaction_id_seq;
+drop sequence baggage_transaction_id_seq;
+
+
+
+-------------------------------------------------------------------------------
+
+-- Creating Sequences for Primary Keys
+
+create sequence customer_id_seq;
+create sequence maint_item_id_seq;
+create sequence employee_id_seq;
+create sequence plane_id_seq;
+create sequence location_id_seq;
+create sequence maint_transaction_id_seq;
+create sequence baggage_id_seq;
+create sequence reservation_id_seq;
+create sequence flight_route_id_seq;
+create sequence flight_id_seq;
+create sequence ticket_id_seq;
+create sequence ticket_transaction_id_seq;
+create sequence baggage_transaction_id_seq;
+
+
+-------------------------------------------------------------------------------
+
+-- Warehouse
+
+-- Customer Table
+create table customer 
+(
+    Customer_ID     number(10)  default customer_id_seq.nextval primary key,
+    First_Name      varchar(20) not null,
+    Last_Name       varchar(20) not null,
+    Email           varchar(40) not null     UNIQUE,
+    Phone           char(12)    not null,
+    Gender          char(1),
+    Address         varchar(30) not null,
+    City            varchar(20) not null,
+    State_Abbr      varchar(2)  not null,
+    Zip             char(5)     not null
+);
+
+-- Maintenance Item Table
+create table maint_item 
+(
+    Maint_Item_ID   number(10)  default maint_item_id_seq.nextval primary key,
+    Maint_Item_Name varchar(50) not null    UNIQUE,
+    Units           varchar(10) not null,
+    MPN             varchar(20) not null    UNIQUE,
+    Manufacturer    varchar(40) not null,
+    Phone           char(12)    not null,
+    Address         varchar(30) not null,
+    City            varchar(20) not null,
+    State_Abbr      varchar(2)  not null,
+    Zip             char(5)     not null
+);
+
+-- Employee Table
+create table employee 
+(
+    Employee_ID     number(10)  default employee_id_seq.nextval primary key,
+    First_Name      varchar(20) not null,
+    Last_Name       varchar(20) not null,
+    Email           varchar(40) not null     UNIQUE,
+    Phone           char(12)    not null,
+    Gender          char(1),
+    Address         varchar(30) not null,
+    City            varchar(20) not null,
+    State_Abbr      varchar(2)  not null,
+    Zip             char(5)     not null,
+    Country         varchar(40) not null,
+    Role            varchar(40) not null,
+    Manager         varchar(40) not null,
+    Business_Unit   varchar(40) not null
+);
+
+-- Plane Table
+create table plane 
+(
+    Plane_ID        number(10)  default plane_id_seq.nextval primary key,
+    Tail_Number     varchar(10) not null    UNIQUE,
+    Manufacturer    varchar(40) not null,
+    Service_Years   number(3)   not null,
+    Capacity        number(8)   not null,
+    Model_Number    varchar(15) not null
+);
+
+-- Location Table
+create table location 
+(
+    Location_ID         number(10)  default location_id_seq.nextval primary key,
+    Location_Name       varchar(10) not null,
+    Address             varchar(30) not null,
+    Runway_Number       varchar(4)  not null,
+    Capacity            number(6)   not null,
+    Service_Agreement   varchar(10) not null
+);
+
+-- Inventory Location Table
+create table inv_location
+(
+    Location_ID     number(10)  not null    references location(Location_ID),
+    Maint_Item_ID   number(10)  not null    references maint_item(Maint_Item_ID),
+    Quantity        number(10)  not null,
+
+    constraint  inv_location_PK primary key (Location_ID, Maint_Item_ID)
+);
+
+-- Maintenance Transaction Table
+create table maint_transaction
+(
+    Maint_Transaction_ID    number(20)  default     maint_transaction_id_seq.nextval   primary key,
+    Employee_ID             number(10)  not null    references employee(Employee_ID),
+    Plane_ID                number(10)  not null    references plane(Plane_ID),
+    Maint_Item_ID           number(10)  not null    references maint_item(Maint_Item_ID),
+    Maint_Item_Name         varchar(50) not null    references maint_item(Maint_Item_Name),
+    Quantity                number(10)  not null,
+    Datetime                date        default sysdate not null,
+    Location                number(10) not null     references location(Location_ID)
+);
+
+-- Baggage Table
+create table baggage
+(
+    Baggage_ID              number(10)  default baggage_id_seq.nextval  primary key,
+    Price                   decimal(5)  not null,
+    Weight                  decimal(5)  not null,
+    Fragile_Flag            varchar(1)  not null,
+    Start_Location          varchar(10) not null,
+    Destination_Location    varchar(10) not null
+);
+
+-- Reservation Table
+create table reservation
+(
+    Reservation_ID  number(10)  default reservation_id_seq.nextval  primary key,
+    Reserver_ID     number(10)  not null    references customer(Customer_ID),
+    Reserver_Name   varchar(40) not null,
+    Status          varchar(30) not null
+);
+
+-- Reservation Passengers Table
+create table reservation_passengers
+(
+    Reservation_ID  number(10)  not null    references reservation(Reservation_ID),
+    Customer_ID     number(10)  not null    references customer(Customer_ID),
+
+    constraint  reservation_passengers_PK primary key (Reservation_ID, Customer_ID)
+);
+
+-- Flight Route Table
+create table flight_route
+(
+    Flight_Route_ID     number(10)  default flight_route_id_seq.nextval primary key,
+    Departing_airport   number(10)  not null    references location(Location_ID),
+    Arrival_Airport     number(10)  not null    references location(location_ID)
+);
+
+-- Flight Table
+create table flight
+(
+    Flight_ID       number(10)  default flight_id_seq.nextval primary key,
+    Flight_Route_ID number(10)  not null    references flight_route(Flight_Route_ID),
+    Plane_ID        number(10)  not null    references plane(Plane_ID),
+    Datetime        date        default sysdate not null
+);
+
+-- Ticket Table
+create table ticket
+(
+    Ticket_ID               number(10)  default ticket_id_seq.nextval   primary key,
+    Reservation_ID          number(10)  not null    references reservation(Reservation_ID),
+    Purchaser_ID            number(10)  not null    references customer(Customer_ID),
+    Passenger_ID            number(10)  not null    references customer(Customer_ID),
+    Pricing_ID              number(10)  not null,
+    Flight_ID               number(10)  not null    references flight(Flight_ID),
+    Flight_Route_ID         number(10)  not null    references flight_route(Flight_Route_ID),
+    Start_Location          number(10)  not null    references location(Location_ID),
+    Destination_Location    number(10)  not null    references location(Location_ID),
+    Boarding_Group          varchar(5)  not null,
+    Status                  varchar(30) not null
+);
+
+-- Ticket Transaction Table
+create table ticket_transaction
+(
+    Ticket_Transaction_ID   number(10)  default ticket_transaction_id_seq.nextval   primary key,
+    Ticket_ID               number(10)  not null    references ticket(Ticket_ID),
+    Reservation_ID          number(10)  not null    references reservation(Reservation_ID),
+    Purchaser_Name          varchar(40) not null,
+    Passenger_Name          varchar(40) not null,
+    Datetime                date        default sysdate not null,
+    Transaction_Type        varchar(40) not null,
+    Status                  varchar(40) not null
+);
+
+-- Baggage Transaction Table
+create table baggage_transaction
+(
+    Baggage_Transaction_ID  number(10)  default baggage_transaction_id_seq.nextval  primary key,
+    Baggage_ID              number(10)  not null    references baggage(Baggage_ID),
+    Ticket_ID               number(10)  not null    references ticket(Ticket_ID),
+    Passenger_Name          varchar(40) not null,
+    Flight_ID               number(10)  not null    references flight(Flight_ID),
+    Start_Location          number(10)  not null    references location(Location_ID),
+    Destination_Location    number(10)  not null    references location(Location_ID),    
+    Current_Location        number(10)  not null    references location(Location_ID),
+    Transaction_Type        varchar(20) not null
+);
+
+-- Ticket Baggage Table
+create table ticket_baggage
+(
+    Baggage_ID  number(10)  not null    references baggage(Baggage_ID),
+    Ticket_ID   number(10)  not null    references ticket(Ticket_ID),
+    
+    constraint ticket_baggage_PK primary key (Baggage_ID, Ticket_ID)
+);

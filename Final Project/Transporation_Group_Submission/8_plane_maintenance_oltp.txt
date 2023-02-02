@@ -1,0 +1,137 @@
+-- Plane Maintenance OLTP System
+
+drop table inv_location;
+drop table maint_transaction;
+drop table maint_item;
+drop table location;
+
+drop sequence location_id_seq;
+drop sequence maint_item_id_seq;
+drop sequence maint_transaction_id_seq;
+
+-- Creating Sequences for Primary Keys
+
+create sequence location_id_seq;
+
+create sequence maint_item_id_seq;
+
+create sequence maint_transaction_id_seq;
+
+
+-- Creating Tables
+
+-- Location Table
+create table location 
+(
+    Location_ID         number(10)  default location_id_seq.nextval primary key,
+    Location_Name       varchar(10) not null,
+    Address             varchar(30) not null,
+    Runway_Number       varchar(4)  not null,
+    Capacity            number(6)   not null,
+    Service_Agreement   varchar(10)  not null
+);
+
+-- Maintenance Item Table
+create table maint_item 
+(
+    Maint_Item_ID   number(10)  default maint_item_id_seq.nextval primary key,
+    Maint_Item_Name varchar(50) not null    UNIQUE,
+    Units           varchar(10) not null,
+    MPN             varchar(20) not null    UNIQUE,
+    Manufacturer    varchar(40) not null,
+    Phone           char(12)    not null,
+    Address         varchar(30) not null,
+    City            varchar(20) not null,
+    State_Abbr      varchar(2)  not null,
+    Zip             char(5)     not null
+);
+
+-- Inventory Location Table
+create table inv_location
+(
+    Location_ID     number(10)  not null    references location(Location_ID),
+    Maint_Item_ID   number(10)  not null    references maint_item(Maint_Item_ID),
+    Quantity        number(10)  not null,
+
+    constraint  inv_location_PK primary key (Location_ID, Maint_Item_ID)
+);
+
+-- Maintenance Transaction Table
+create table maint_transaction
+(
+    Maint_Transaction_ID    number(20)  default     maint_transaction_id_seq.nextval   primary key,
+    Employee_ID             number(10)  not null,
+    Plane_ID                number(10)  not null,
+    Maint_Item_ID           number(10)  not null    references maint_item(Maint_Item_ID),
+    Maint_Item_Name         varchar(50) not null    references maint_item(Maint_Item_Name),
+    Quantity                number(10)  not null,
+    Datetime                date        default sysdate not null,
+    Location                varchar(10) not null
+);
+-------------------------------------------------------------------------------
+
+
+
+
+
+-- Location Table
+insert into location (Location_ID, Location_Name, Address, Runway_Number, Capacity, Service_Agreement) values (1, 'ACJ', '25796 Nancy Street', 98, 26, '0Uk-53');
+insert into location (Location_ID, Location_Name, Address, Runway_Number, Capacity, Service_Agreement) values (2, 'HLH', '6388 Corry Way', 84, 32, 'swQ-78');
+insert into location (Location_ID, Location_Name, Address, Runway_Number, Capacity, Service_Agreement) values (3, 'PDU', '5 Grasskamp Way', 77, 33, 'nC6-53');
+insert into location (Location_ID, Location_Name, Address, Runway_Number, Capacity, Service_Agreement) values (4, 'WJF', '49001 Prairieview Pass', 60, 11, '0zq-17');
+insert into location (Location_ID, Location_Name, Address, Runway_Number, Capacity, Service_Agreement) values (5, 'DRC', '9954 Sauthoff Drive', 31, 32, 'hjb-45');
+insert into location (Location_ID, Location_Name, Address, Runway_Number, Capacity, Service_Agreement) values (6, 'SDC', '0521 Schiller Center', 88, 27, 'jsQ-69');
+insert into location (Location_ID, Location_Name, Address, Runway_Number, Capacity, Service_Agreement) values (7, 'PPB', '164 Waubesa Lane', 68, 29, 'uHd-23');
+insert into location (Location_ID, Location_Name, Address, Runway_Number, Capacity, Service_Agreement) values (8, 'POX', '80 Dovetail Pass', 45, 16, 'duN-50');
+insert into location (Location_ID, Location_Name, Address, Runway_Number, Capacity, Service_Agreement) values (9, 'BGU', '18385 Thompson Pass', 87, 22, 'DLS-07');
+insert into location (Location_ID, Location_Name, Address, Runway_Number, Capacity, Service_Agreement) values (10, 'CYD', '88 Bultman Hill', 64, 33, 'O6N-12');
+
+-- Maintanence Item Table
+insert into maint_item (Maint_Item_ID, Maint_Item_Name, Units, MPN, Manufacturer, Phone, Address, City, State_Abbr, Zip) values (1, '11-200 - Water Supply and Treatment Equipment', 'Feet', 'S222-23:197 ', 'Senger-Swaniawski', '505-225-1871', '812 Chinook Trail', 'Santa Fe', 'NM', 45329);
+insert into maint_item (Maint_Item_ID, Maint_Item_Name, Units, MPN, Manufacturer, Phone, Address, City, State_Abbr, Zip) values (2, '15-500 - Heat-Generation Equipment', 'Feet', 'Q222-78:965 ', 'Haag, Marquardt and Larson', '817-141-5793', '2092 Blaine Plaza', 'Fort Worth', 'TX', 36002);
+insert into maint_item (Maint_Item_ID, Maint_Item_Name, Units, MPN, Manufacturer, Phone, Address, City, State_Abbr, Zip) values (3, '7 - Thermal and Moisture Protection', 'Feet', 'V222-79:182 ', 'Feil, Rodriguez and Carter', '912-562-5090', '86 Manufacturers Circle', 'Savannah', 'GA', 29210);
+insert into maint_item (Maint_Item_ID, Maint_Item_Name, Units, MPN, Manufacturer, Phone, Address, City, State_Abbr, Zip) values (4, '17-020 - Insurance', 'Liters', 'Y222-33:453 ', 'Cremin-Stehr', '601-532-2460', '32 Bellgrove Trail', 'Jackson', 'MS', 74715);
+insert into maint_item (Maint_Item_ID, Maint_Item_Name, Units, MPN, Manufacturer, Phone, Address, City, State_Abbr, Zip) values (5, '11-040 - Ecclesiastical Equipment', 'Liters', 'A222-63:549 ', 'Walsh, Osinski and McClure', '606-515-2978', '9941 Golf View Avenue', 'London', 'KY', 31083);
+insert into maint_item (Maint_Item_ID, Maint_Item_Name, Units, MPN, Manufacturer, Phone, Address, City, State_Abbr, Zip) values (6, '5 - Metals', 'Feet', 'F222-23:775 ', 'Ryan, Schuster and Bins', '213-910-7961', '857 Grover Point', 'Los Angeles', 'CA', 74041);
+insert into maint_item (Maint_Item_ID, Maint_Item_Name, Units, MPN, Manufacturer, Phone, Address, City, State_Abbr, Zip) values (7, '14-400 - Lifts', 'Gallons', 'W222-96:428 ', 'Littel Group', '217-504-3012', '796 Waxwing Alley', 'Springfield', 'IL', 72880);
+insert into maint_item (Maint_Item_ID, Maint_Item_Name, Units, MPN, Manufacturer, Phone, Address, City, State_Abbr, Zip) values (8, '2-823 - PVC Fences and Gates', 'Gallons', 'F222-37:486 ', 'Johns-Anderson', '718-311-3379', '28044 Shopko Place', 'Brooklyn', 'NY', 45701);
+insert into maint_item (Maint_Item_ID, Maint_Item_Name, Units, MPN, Manufacturer, Phone, Address, City, State_Abbr, Zip) values (9, '10-450 - Pedestrian Control Devices', 'Gallons', 'S222-06:039 ', 'Kub-McClure', '208-739-5454', '7849 Fallview Plaza', 'Boise', 'ID', 47928);
+insert into maint_item (Maint_Item_ID, Maint_Item_Name, Units, MPN, Manufacturer, Phone, Address, City, State_Abbr, Zip) values (10, '2-850 - Bridges/Footbridges', 'Feet', 'K222-46:090 ', 'Gibson and Sons', '317-951-1124', '52 Chinook Park', 'Indianapolis', 'IN', 39674);
+insert into maint_item (Maint_Item_ID, Maint_Item_Name, Units, MPN, Manufacturer, Phone, Address, City, State_Abbr, Zip) values (11, '3-100 - Concrete Reinforcement', 'Liters', 'Y222-39:943 ', 'DuBuque, Abshire and Abernathy', '480-281-3665', '41 Iowa Plaza', 'Gilbert', 'AZ', 50102);
+insert into maint_item (Maint_Item_ID, Maint_Item_Name, Units, MPN, Manufacturer, Phone, Address, City, State_Abbr, Zip) values (12, '15-100 - Plumbing', 'Liters', 'L222-80:238 ', 'Sporer-DuBuque', '719-559-7905', '6352 Haas Court', 'Colorado Springs', 'CO', 53864);
+insert into maint_item (Maint_Item_ID, Maint_Item_Name, Units, MPN, Manufacturer, Phone, Address, City, State_Abbr, Zip) values (13, '2-316 - Backfilling', 'Liters', 'I222-41:130 ', 'Rolfson, Raynor and Labadie', '505-486-3028', '508 Morrow Hill', 'Santa Fe', 'NM', 47555);
+insert into maint_item (Maint_Item_ID, Maint_Item_Name, Units, MPN, Manufacturer, Phone, Address, City, State_Abbr, Zip) values (14, '12-300 - Manufactured Casework', 'Liters', 'F222-91:067 ', 'Walter Group', '858-978-7101', '9 Birchwood Center', 'San Diego', 'CA', 37177);
+insert into maint_item (Maint_Item_ID, Maint_Item_Name, Units, MPN, Manufacturer, Phone, Address, City, State_Abbr, Zip) values (15, '3-400 - Precast Concrete', 'Liters', 'L222-31:811 ', 'Auer, Zboncak and Goyette', '301-971-6892', '85 Columbus Place', 'Silver Spring', 'MD', 62590);
+
+-- Inventory Location
+insert into inv_location (Location_ID, Maint_Item_ID, Quantity) values (2, 6, 9104);
+insert into inv_location (Location_ID, Maint_Item_ID, Quantity) values (5, 4, 5585);
+insert into inv_location (Location_ID, Maint_Item_ID, Quantity) values (8, 7, 639);
+insert into inv_location (Location_ID, Maint_Item_ID, Quantity) values (6, 2, 5233);
+insert into inv_location (Location_ID, Maint_Item_ID, Quantity) values (6, 5, 8474);
+insert into inv_location (Location_ID, Maint_Item_ID, Quantity) values (6, 6, 235);
+insert into inv_location (Location_ID, Maint_Item_ID, Quantity) values (2, 3, 3977);
+insert into inv_location (Location_ID, Maint_Item_ID, Quantity) values (7, 2, 774);
+insert into inv_location (Location_ID, Maint_Item_ID, Quantity) values (7, 4, 395);
+insert into inv_location (Location_ID, Maint_Item_ID, Quantity) values (2, 2, 894);
+insert into inv_location (Location_ID, Maint_Item_ID, Quantity) values (7, 1, 958);
+insert into inv_location (Location_ID, Maint_Item_ID, Quantity) values (2, 1, 5921);
+insert into inv_location (Location_ID, Maint_Item_ID, Quantity) values (8, 3, 8083);
+insert into inv_location (Location_ID, Maint_Item_ID, Quantity) values (4, 7, 4712);
+
+-- Maintenance Transaction Table
+insert into maint_transaction (Maint_Transaction_ID, Employee_ID, Plane_ID, Maint_Item_ID, Maint_Item_Name, Quantity, Location) values (1, 19, 227, 9, (select m.Maint_Item_Name from maint_item m where m.Maint_Item_ID=9), 14, 'CPU');
+insert into maint_transaction (Maint_Transaction_ID, Employee_ID, Plane_ID, Maint_Item_ID, Maint_Item_Name, Quantity, Location) values (2, 62, 168, 8, (select m.Maint_Item_Name from maint_item m where m.Maint_Item_ID=8), 82, 'GDO');
+insert into maint_transaction (Maint_Transaction_ID, Employee_ID, Plane_ID, Maint_Item_ID, Maint_Item_Name, Quantity, Location) values (3, 29, 343, 15, (select m.Maint_Item_Name from maint_item m where m.Maint_Item_ID=15), 95, 'OLL');
+insert into maint_transaction (Maint_Transaction_ID, Employee_ID, Plane_ID, Maint_Item_ID, Maint_Item_Name, Quantity, Location) values (4, 35, 187, 5, (select m.Maint_Item_Name from maint_item m where m.Maint_Item_ID=5), 79, 'GRL');
+insert into maint_transaction (Maint_Transaction_ID, Employee_ID, Plane_ID, Maint_Item_ID, Maint_Item_Name, Quantity, Location) values (5, 91, 394, 4, (select m.Maint_Item_Name from maint_item m where m.Maint_Item_ID=4), 77, 'TMO');
+insert into maint_transaction (Maint_Transaction_ID, Employee_ID, Plane_ID, Maint_Item_ID, Maint_Item_Name, Quantity, Location) values (6, 48, 187, 1, (select m.Maint_Item_Name from maint_item m where m.Maint_Item_ID=1), 40, 'LOT');
+insert into maint_transaction (Maint_Transaction_ID, Employee_ID, Plane_ID, Maint_Item_ID, Maint_Item_Name, Quantity, Location) values (7, 62, 290, 2, (select m.Maint_Item_Name from maint_item m where m.Maint_Item_ID=2), 67,  'CBL');
+insert into maint_transaction (Maint_Transaction_ID, Employee_ID, Plane_ID, Maint_Item_ID, Maint_Item_Name, Quantity, Location) values (8, 69, 411, 4, (select m.Maint_Item_Name from maint_item m where m.Maint_Item_ID=4), 95,  'DRK');
+insert into maint_transaction (Maint_Transaction_ID, Employee_ID, Plane_ID, Maint_Item_ID, Maint_Item_Name, Quantity, Location) values (9, 17, 153, 9, (select m.Maint_Item_Name from maint_item m where m.Maint_Item_ID=9), 50, 'BID');
+insert into maint_transaction (Maint_Transaction_ID, Employee_ID, Plane_ID, Maint_Item_ID, Maint_Item_Name, Quantity, Location) values (10, 27, 140, 9, (select m.Maint_Item_Name from maint_item m where m.Maint_Item_ID=9), 21, 'ZIN');
+insert into maint_transaction (Maint_Transaction_ID, Employee_ID, Plane_ID, Maint_Item_ID, Maint_Item_Name, Quantity, Location) values (11, 40, 355, 9, (select m.Maint_Item_Name from maint_item m where m.Maint_Item_ID=9), 39,  'ELZ');
+insert into maint_transaction (Maint_Transaction_ID, Employee_ID, Plane_ID, Maint_Item_ID, Maint_Item_Name, Quantity, Location) values (12, 45, 371, 4, (select m.Maint_Item_Name from maint_item m where m.Maint_Item_ID=4), 33, 'ITM');
+insert into maint_transaction (Maint_Transaction_ID, Employee_ID, Plane_ID, Maint_Item_ID, Maint_Item_Name, Quantity, Location) values (13, 29, 124, 14, (select m.Maint_Item_Name from maint_item m where m.Maint_Item_ID=14), 79,  'SFG');
+insert into maint_transaction (Maint_Transaction_ID, Employee_ID, Plane_ID, Maint_Item_ID, Maint_Item_Name, Quantity, Location) values (14, 58, 200, 10, (select m.Maint_Item_Name from maint_item m where m.Maint_Item_ID=10), 35, 'ZKL');
+insert into maint_transaction (Maint_Transaction_ID, Employee_ID, Plane_ID, Maint_Item_ID, Maint_Item_Name, Quantity, Location) values (15, 75, 213, 15, (select m.Maint_Item_Name from maint_item m where m.Maint_Item_ID=15), 55, 'UMR');

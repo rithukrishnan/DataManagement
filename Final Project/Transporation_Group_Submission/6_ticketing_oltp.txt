@@ -1,0 +1,191 @@
+-- Ticketing OLTP System
+
+drop table ticket_transaction;
+drop table ticket;
+drop table reservation;
+drop table customer;
+
+drop sequence customer_id_seq;
+drop sequence reservation_id_seq;
+drop sequence ticket_id_seq;
+drop sequence ticket_transaction_id_seq;
+
+-- Creating Sequences for Primary Keys
+
+create sequence customer_id_seq;
+
+create sequence reservation_id_seq;
+
+create sequence ticket_id_seq;
+
+create sequence ticket_transaction_id_seq;
+
+
+-- Creating Tables
+
+-- Customer Table
+create table customer 
+(
+    Customer_ID     number(10)  default customer_id_seq.nextval primary key,
+    First_Name      varchar(20) not null,
+    Last_Name       varchar(20) not null,
+    Email           varchar(40) not null     UNIQUE,
+    Phone           char(12)    not null,
+    Gender          char(1),
+    Address         varchar(30) not null,
+    City            varchar(20) not null,
+    State_Abbr      varchar(2)  not null,
+    Zip             char(5)     not null
+);
+
+-- Reservation Table
+create table reservation
+(
+    Reservation_ID  number(10)  default reservation_id_seq.nextval  primary key,
+    Reserver_ID     number(10)  not null    references customer(Customer_ID),
+    Reserver_Name   varchar(40) not null,
+    Status          varchar(30) not null
+);
+
+-- Ticket Table
+create table ticket
+(
+    Ticket_ID               number(10)  default ticket_id_seq.nextval   primary key,
+    Reservation_ID          number(10)  not null    references reservation(Reservation_ID),
+    Reserver_Name           varchar(40) not null,
+    Passenger_Name          varchar(40) not null,
+    Price                   number(10)  not null,
+    Flight_ID               varchar(20) not null,
+    Flight_Route            varchar(10) not null,
+    Start_Location          varchar(5)  not null,
+    Destination_Location    varchar(5)  not null,
+    Boarding_Group          varchar(5)  not null,
+    Status                  varchar(30) not null
+);
+
+-- Ticket Transaction Table
+create table ticket_transaction
+(
+    Ticket_Transaction_ID   number(20)  default ticket_transaction_id_seq.nextval   primary key,
+    Ticket_ID               number(10)  not null    references ticket(Ticket_ID),
+    Reservation_ID          number(10)  not null,
+    Purchaser_Name          varchar(40) not null,
+    Passenger_Name          varchar(40) not null,
+    Datetime                date        default sysdate not null,
+    Transaction_Type        varchar(40) not null,
+    Status                  varchar(40) not null
+);
+
+
+
+
+-- Customer Table Seed Data
+
+
+insert into customer (Customer_ID, First_Name, Last_Name, Email, Phone, Gender, Address, City, State_Abbr, Zip) values (1, 'Marillin', 'Wattisham', 'mwattisham0@indiegogo.com', '318-661-9490', 'F', '24215 Thompson Junction', 'Shreveport', 'LA', '71130');
+insert into customer (Customer_ID, First_Name, Last_Name, Email, Phone, Gender, Address, City, State_Abbr, Zip) values (2, 'Aldric', 'Wooddisse', 'awooddisse1@hugedomains.com', '904-728-4447', 'M', '9 Columbus Terrace', 'Jacksonville', 'FL', '32236');
+insert into customer (Customer_ID, First_Name, Last_Name, Email, Phone, Gender, Address, City, State_Abbr, Zip) values (3, 'Gardy', 'Allison', 'gallison2@homestead.com', '954-777-2479', 'M', '7682 Forster Alley', 'Fort Lauderdale', 'FL', '33330');
+insert into customer (Customer_ID, First_Name, Last_Name, Email, Phone, Gender, Address, City, State_Abbr, Zip) values (4, 'Charles', 'Rollett', 'crollett3@google.com.br', '614-952-8696', 'M', '529 Merry Park', 'Columbus', 'OH', '43231');
+insert into customer (Customer_ID, First_Name, Last_Name, Email, Phone, Gender, Address, City, State_Abbr, Zip) values (5, 'Aloin', 'Villaret', 'avillaret4@spiegel.de', '480-817-3590', 'M', '74607 Holmberg Way', 'Chandler', 'AZ', '85246');
+insert into customer (Customer_ID, First_Name, Last_Name, Email, Phone, Gender, Address, City, State_Abbr, Zip) values (6, 'Mariejeanne', 'Paz', 'mpaz5@t-online.de', '229-431-4878', 'F', '52 Kropf Park', 'Albany', 'GA', '31704');
+insert into customer (Customer_ID, First_Name, Last_Name, Email, Phone, Gender, Address, City, State_Abbr, Zip) values (7, 'Dena', 'Janczak', 'djanczak6@creativecommons.org', '804-737-6410', 'F', '49 Homewood Avenue', 'Richmond', 'VA', '23285');
+insert into customer (Customer_ID, First_Name, Last_Name, Email, Phone, Gender, Address, City, State_Abbr, Zip) values (8, 'Marcello', 'Behnecken', 'mbehnecken7@hp.com', '816-110-8977', 'M', '5972 6th Pass', 'Kansas City', 'MO', '64190');
+insert into customer (Customer_ID, First_Name, Last_Name, Email, Phone, Gender, Address, City, State_Abbr, Zip) values (9, 'Austin', 'Ivey', 'aivey8@linkedin.com', '702-598-4395', 'M', '906 Farragut Way', 'Las Vegas', 'NV', '89110');
+insert into customer (Customer_ID, First_Name, Last_Name, Email, Phone, Gender, Address, City, State_Abbr, Zip) values (10, 'Dorella', 'Nigh', 'dnigh9@theatlantic.com', '704-129-8109', 'F', '73 Banding Court', 'Charlotte', 'NC', '28247');
+insert into customer (Customer_ID, First_Name, Last_Name, Email, Phone, Gender, Address, City, State_Abbr, Zip) values (11, 'Stanfield', 'McCard', 'smccarda@jigsy.com', '661-630-5076', 'M', '199 Parkside Pass', 'Lancaster', 'CA', '93584');
+insert into customer (Customer_ID, First_Name, Last_Name, Email, Phone, Gender, Address, City, State_Abbr, Zip) values (12, 'Lyda', 'Crunkhurn', 'lcrunkhurnb@craigslist.org', '971-259-0545', 'F', '75 Loftsgordon Plaza', 'Portland', 'OR', '97229');
+insert into customer (Customer_ID, First_Name, Last_Name, Email, Phone, Gender, Address, City, State_Abbr, Zip) values (13, 'Kay', 'Rings', 'kringsc@dyndns.org', '815-534-3457', 'F', '5101 Oriole Alley', 'Rockford', 'IL', '61110');
+insert into customer (Customer_ID, First_Name, Last_Name, Email, Phone, Gender, Address, City, State_Abbr, Zip) values (14, 'Cherin', 'Gettings', 'cgettingsd@dailymotion.com', '806-375-7538', 'F', '25 Rigney Parkway', 'Amarillo', 'TX', '79165');
+insert into customer (Customer_ID, First_Name, Last_Name, Email, Phone, Gender, Address, City, State_Abbr, Zip) values (15, 'Bobbee', 'Yerson', 'byersone@mozilla.org', '318-880-7344', 'F', '8646 Roxbury Junction', 'Shreveport', 'LA', '71137');
+insert into customer (Customer_ID, First_Name, Last_Name, Email, Phone, Gender, Address, City, State_Abbr, Zip) values (16, 'Ulrike', 'Bambury', 'ubamburyf@bravesites.com', '310-632-8569', 'F', '9 Huxley Park', 'Santa Monica', 'CA', '90410');
+insert into customer (Customer_ID, First_Name, Last_Name, Email, Phone, Gender, Address, City, State_Abbr, Zip) values (17, 'Kandace', 'Probey', 'kprobeyg@dot.gov', '585-452-8082', 'F', '33 Knutson Place', 'Rochester', 'NY', '14683');
+insert into customer (Customer_ID, First_Name, Last_Name, Email, Phone, Gender, Address, City, State_Abbr, Zip) values (18, 'Edwina', 'Dunstall', 'edunstallh@hubpages.com', '405-339-4516', 'F', '55 North Avenue', 'Oklahoma City', 'OK', '73119');
+insert into customer (Customer_ID, First_Name, Last_Name, Email, Phone, Gender, Address, City, State_Abbr, Zip) values (19, 'Rudd', 'Letcher', 'rletcheri@rediff.com', '732-465-0202', 'M', '083 Autumn Leaf Trail', 'New Brunswick', 'NJ', '08922');
+insert into customer (Customer_ID, First_Name, Last_Name, Email, Phone, Gender, Address, City, State_Abbr, Zip) values (20, 'Leesa', 'Pettegree', 'lpettegreej@utexas.edu', '415-247-3523', 'F', '817 Green Place', 'San Francisco', 'CA', '94164');
+insert into customer (Customer_ID, First_Name, Last_Name, Email, Phone, Gender, Address, City, State_Abbr, Zip) values (21, 'Jerome', 'Alderman', 'jaldermank@army.mil', '202-426-3527', 'M', '3355 Farmco Trail', 'Washington', 'DC', '20414');
+insert into customer (Customer_ID, First_Name, Last_Name, Email, Phone, Gender, Address, City, State_Abbr, Zip) values (22, 'Elissa', 'Edling', 'eedlingl@myspace.com', '713-739-5548', 'F', '48225 Sachs Court', 'Houston', 'TX', '77065');
+insert into customer (Customer_ID, First_Name, Last_Name, Email, Phone, Gender, Address, City, State_Abbr, Zip) values (23, 'Jeanne', 'Lofty', 'jloftym@bandcamp.com', '336-768-3968', 'F', '205 Badeau Pass', 'Greensboro', 'NC', '27409');
+insert into customer (Customer_ID, First_Name, Last_Name, Email, Phone, Gender, Address, City, State_Abbr, Zip) values (24, 'Neil', 'Vasenkov', 'nvasenkovn@trellian.com', '816-194-3233', 'M', '621 Graedel Crossing', 'Kansas City', 'MO', '64179');
+insert into customer (Customer_ID, First_Name, Last_Name, Email, Phone, Gender, Address, City, State_Abbr, Zip) values (25, 'Courtenay', 'Eslemont', 'ceslemonto@ft.com', '561-594-2900', 'F', '713 Troy Alley', 'West Palm Beach', 'FL', '33411');
+insert into customer (Customer_ID, First_Name, Last_Name, Email, Phone, Gender, Address, City, State_Abbr, Zip) values (26, 'Philomena', 'Crowley', 'pcrowleyp@yellowbook.com', '513-242-5620', 'F', '4 Toban Plaza', 'Cincinnati', 'OH', '45264');
+insert into customer (Customer_ID, First_Name, Last_Name, Email, Phone, Gender, Address, City, State_Abbr, Zip) values (27, 'Koenraad', 'Bignal', 'kbignalq@cnbc.com', '559-599-4569', 'M', '5442 Mitchell Lane', 'Fresno', 'CA', '93709');
+insert into customer (Customer_ID, First_Name, Last_Name, Email, Phone, Gender, Address, City, State_Abbr, Zip) values (28, 'Victoria', 'Bollom', 'vbollomr@fema.gov', '513-340-2150', 'F', '51 Bonner Avenue', 'Cincinnati', 'OH', '45271');
+insert into customer (Customer_ID, First_Name, Last_Name, Email, Phone, Gender, Address, City, State_Abbr, Zip) values (29, 'Palmer', 'Catherick', 'pcathericks@yellowpages.com', '256-667-2103', 'M', '2465 High Crossing Pass', 'Gadsden', 'AL', '35905');
+insert into customer (Customer_ID, First_Name, Last_Name, Email, Phone, Gender, Address, City, State_Abbr, Zip) values (30, 'Annice', 'Rapa', 'arapat@google.cn', '618-970-3764', 'F', '96 Everett Junction', 'East Saint Louis', 'IL', '62205');
+insert into customer (Customer_ID, First_Name, Last_Name, Email, Phone, Gender, Address, City, State_Abbr, Zip) values (31, 'Aldus', 'Benadette', 'abenadetteu@360.cn', '214-151-6810', 'M', '572 Esker Plaza', 'Dallas', 'TX', '75387');
+insert into customer (Customer_ID, First_Name, Last_Name, Email, Phone, Gender, Address, City, State_Abbr, Zip) values (32, 'Parsifal', 'Wilbraham', 'pwilbrahamv@whitehouse.gov', '513-491-0975', 'M', '916 Del Sol Road', 'Cincinnati', 'OH', '45243');
+insert into customer (Customer_ID, First_Name, Last_Name, Email, Phone, Gender, Address, City, State_Abbr, Zip) values (33, 'Hartley', 'Tupman', 'htupmanw@hibu.com', '505-675-5906', 'M', '67440 American Trail', 'Las Cruces', 'NM', '88006');
+insert into customer (Customer_ID, First_Name, Last_Name, Email, Phone, Gender, Address, City, State_Abbr, Zip) values (34, 'Saundra', 'Golder', 'sgolderx@miibeian.gov.cn', '610-529-6655', 'F', '32 Clove Plaza', 'Reading', 'PA', '19605');
+insert into customer (Customer_ID, First_Name, Last_Name, Email, Phone, Gender, Address, City, State_Abbr, Zip) values (35, 'Wendi', 'Pepin', 'wpepiny@psu.edu', '210-534-5495', 'F', '4 Village Green Court', 'San Antonio', 'TX', '78240');
+insert into customer (Customer_ID, First_Name, Last_Name, Email, Phone, Gender, Address, City, State_Abbr, Zip) values (36, 'Haily', 'Danhel', 'hdanhelz@seattletimes.com', '806-541-3624', 'M', '4504 Lawn Circle', 'Amarillo', 'TX', '79116');
+insert into customer (Customer_ID, First_Name, Last_Name, Email, Phone, Gender, Address, City, State_Abbr, Zip) values (37, 'Sanson', 'Le Gassick', 'slegassick10@cnet.com', '573-718-4348', 'M', '044 Ridgeview Plaza', 'Columbia', 'MO', '65218');
+insert into customer (Customer_ID, First_Name, Last_Name, Email, Phone, Gender, Address, City, State_Abbr, Zip) values (38, 'Roanna', 'Wilfing', 'rwilfing11@howstuffworks.com', '304-628-3679', 'F', '777 Burning Wood Trail', 'Charleston', 'WV', '25331');
+insert into customer (Customer_ID, First_Name, Last_Name, Email, Phone, Gender, Address, City, State_Abbr, Zip) values (39, 'Myrlene', 'Rogers', 'mrogers12@engadget.com', '573-133-5978', 'F', '5 Arizona Park', 'Jefferson City', 'MO', '65105');
+insert into customer (Customer_ID, First_Name, Last_Name, Email, Phone, Gender, Address, City, State_Abbr, Zip) values (40, 'Durward', 'Swoffer', 'dswoffer13@histats.com', '229-739-6676', 'M', '39 New Castle Crossing', 'Albany', 'GA', '31704');
+insert into customer (Customer_ID, First_Name, Last_Name, Email, Phone, Gender, Address, City, State_Abbr, Zip) values (41, 'Kiley', 'Chaloner', 'kchaloner14@rakuten.co.jp', '901-832-6888', 'M', '30998 Butternut Place', 'Memphis', 'TN', '38150');
+insert into customer (Customer_ID, First_Name, Last_Name, Email, Phone, Gender, Address, City, State_Abbr, Zip) values (42, 'Dill', 'Gandar', 'dgandar15@bloomberg.com', '936-457-6682', 'M', '90254 Farragut Park', 'Huntsville', 'TX', '77343');
+insert into customer (Customer_ID, First_Name, Last_Name, Email, Phone, Gender, Address, City, State_Abbr, Zip) values (43, 'Tracey', 'Pietzner', 'tpietzner16@discuz.net', '817-400-5928', 'M', '771 1st Street', 'Arlington', 'TX', '76004');
+insert into customer (Customer_ID, First_Name, Last_Name, Email, Phone, Gender, Address, City, State_Abbr, Zip) values (44, 'Galvan', 'Storrah', 'gstorrah17@cafepress.com', '402-305-1284', 'M', '452 Hayes Lane', 'Lincoln', 'NE', '68524');
+insert into customer (Customer_ID, First_Name, Last_Name, Email, Phone, Gender, Address, City, State_Abbr, Zip) values (45, 'Tammy', 'Solano', 'tsolano18@census.gov', '909-336-1404', 'M', '969 Northport Trail', 'San Bernardino', 'CA', '92415');
+insert into customer (Customer_ID, First_Name, Last_Name, Email, Phone, Gender, Address, City, State_Abbr, Zip) values (46, 'Leona', 'Kenwyn', 'lkenwyn19@businesswire.com', '508-389-2546', 'F', '2027 Orin Plaza', 'Newton', 'MA', '02162');
+insert into customer (Customer_ID, First_Name, Last_Name, Email, Phone, Gender, Address, City, State_Abbr, Zip) values (47, 'Finn', 'Reder', 'freder1a@flavors.me', '212-488-3880', 'M', '7 Everett Pass', 'New York City', 'NY', '10150');
+insert into customer (Customer_ID, First_Name, Last_Name, Email, Phone, Gender, Address, City, State_Abbr, Zip) values (48, 'Ozzie', 'Busch', 'obusch1b@delicious.com', '850-466-5285', 'M', '849 Rockefeller Parkway', 'Pensacola', 'FL', '32511');
+insert into customer (Customer_ID, First_Name, Last_Name, Email, Phone, Gender, Address, City, State_Abbr, Zip) values (49, 'Anselm', 'Eastcott', 'aeastcott1c@nyu.edu', '515-705-0914', 'M', '12 Killdeer Park', 'Des Moines', 'IA', '50335');
+insert into customer (Customer_ID, First_Name, Last_Name, Email, Phone, Gender, Address, City, State_Abbr, Zip) values (50, 'Antons', 'Galea', 'agalea1d@istockphoto.com', '313-175-5434', 'M', '90 Annamark Drive', 'Dearborn', 'MI', '48126');
+
+
+
+-- Reservation Table
+insert into reservation (Reservation_ID, Reserver_ID, Reserver_Name, Status) values (1, 1, (select customer.First_Name ||' '|| customer.Last_Name from customer where customer.Customer_ID=1), 'Confirmed');
+insert into reservation (Reservation_ID, Reserver_ID, Reserver_Name, Status) values (2, 5, (select customer.First_Name ||' '|| customer.Last_Name from customer where customer.Customer_ID=5), 'Confirmed');
+insert into reservation (Reservation_ID, Reserver_ID, Reserver_Name, Status) values (3, 10, (select customer.First_Name ||' '|| customer.Last_Name from customer where customer.Customer_ID=10), 'Confirmed');
+insert into reservation (Reservation_ID, Reserver_ID, Reserver_Name, Status) values (4, 20, (select customer.First_Name ||' '|| customer.Last_Name from customer where customer.Customer_ID=20), 'Confirmed');
+insert into reservation (Reservation_ID, Reserver_ID, Reserver_Name, Status) values (5, 25, (select customer.First_Name ||' '|| customer.Last_Name from customer where customer.Customer_ID=25), 'Cancelled');
+
+
+-- Ticket Table
+insert into ticket(Ticket_ID, Reservation_ID, Reserver_Name, Passenger_Name, Price, Flight_ID, Flight_Route, Start_Location, Destination_Location, Boarding_Group, Status)
+values (1, 1, (select r.Reserver_Name from reservation r where r.Reservation_ID=1), (select customer.First_Name ||' '|| customer.Last_Name from customer where customer.Customer_ID=2), 200, '03565938', '1560', 'AUS', 'DAL', 'A20', 'Confirmed');
+
+insert into ticket(Ticket_ID, Reservation_ID, Reserver_Name, Passenger_Name, Price, Flight_ID, Flight_Route, Start_Location, Destination_Location, Boarding_Group, Status)
+values (2, 2, (select r.Reserver_Name from reservation r where r.Reservation_ID=2), (select customer.First_Name ||' '|| customer.Last_Name from customer where customer.Customer_ID=11), 205, '03565938', '1560', 'AUS', 'DAL', 'A25', 'Confirmed');
+
+insert into ticket(Ticket_ID, Reservation_ID, Reserver_Name, Passenger_Name, Price, Flight_ID, Flight_Route, Start_Location, Destination_Location, Boarding_Group, Status)
+values (3, 3, (select r.Reserver_Name from reservation r where r.Reservation_ID=3), (select customer.First_Name ||' '|| customer.Last_Name from customer where customer.Customer_ID=3), 180, '5543789', '1011', 'AUS', 'HOU', 'B25', 'Confirmed');
+
+insert into ticket(Ticket_ID, Reservation_ID, Reserver_Name, Passenger_Name, Price, Flight_ID, Flight_Route, Start_Location, Destination_Location, Boarding_Group, Status)
+values (4, 4, (select r.Reserver_Name from reservation r where r.Reservation_ID=4), (select customer.First_Name ||' '|| customer.Last_Name from customer where customer.Customer_ID=45), 225, '03565938', '1560', 'AUS', 'DAL', 'A2', 'Confirmed');
+
+insert into ticket(Ticket_ID, Reservation_ID, Reserver_Name, Passenger_Name, Price, Flight_ID, Flight_Route, Start_Location, Destination_Location, Boarding_Group, Status)
+values (5, 5, (select r.Reserver_Name from reservation r where r.Reservation_ID=5), (select customer.First_Name ||' '|| customer.Last_Name from customer where customer.Customer_ID=33), 290, '5543789', '1011', 'AUS', 'HOU', 'C2', 'Confirmed');
+
+
+
+-- Ticket Transaction Table
+insert into ticket_transaction(Ticket_ID, Reservation_ID, Purchaser_Name, Passenger_Name, Transaction_Type, Status)
+values (1, (select t.Reservation_ID from ticket t where t.Ticket_ID=1), (select t.Reserver_Name from ticket t where t.Ticket_ID=1), (select t.Passenger_Name from ticket t where t.Ticket_ID=1), 'Initial Purchase', 'Confirmed');
+
+insert into ticket_transaction(Ticket_ID, Reservation_ID, Purchaser_Name, Passenger_Name, Transaction_Type, Status)
+values (2, (select t.Reservation_ID from ticket t where t.Ticket_ID=2), (select t.Reserver_Name from ticket t where t.Ticket_ID=2), (select t.Passenger_Name from ticket t where t.Ticket_ID=2), 'Initial Purchase', 'Confirmed');
+
+insert into ticket_transaction(Ticket_ID, Reservation_ID, Purchaser_Name, Passenger_Name, Transaction_Type, Status)
+values (3, (select t.Reservation_ID from ticket t where t.Ticket_ID=3), (select t.Reserver_Name from ticket t where t.Ticket_ID=3), (select t.Passenger_Name from ticket t where t.Ticket_ID=3), 'Initial Purchase', 'Confirmed');
+
+insert into ticket_transaction(Ticket_ID, Reservation_ID, Purchaser_Name, Passenger_Name, Transaction_Type, Status)
+values (4, (select t.Reservation_ID from ticket t where t.Ticket_ID=4), (select t.Reserver_Name from ticket t where t.Ticket_ID=4), (select t.Passenger_Name from ticket t where t.Ticket_ID=4), 'Initial Purchase', 'Confirmed');
+
+insert into ticket_transaction(Ticket_ID, Reservation_ID, Purchaser_Name, Passenger_Name, Transaction_Type, Status)
+values (5, (select t.Reservation_ID from ticket t where t.Ticket_ID=5), (select t.Reserver_Name from ticket t where t.Ticket_ID=5), (select t.Passenger_Name from ticket t where t.Ticket_ID=5), 'Initial Purchase', 'Confirmed');
+
+
+-- code to cancel a ticket
+update ticket t set status = 'Canceled' where t.Ticket_ID = 5;
+
+insert into ticket_transaction(Ticket_ID, Reservation_ID, Purchaser_Name, Passenger_Name, Transaction_Type, Status)
+values (5, (select t.Reservation_ID from ticket t where t.Ticket_ID=5), (select t.Reserver_Name from ticket t where t.Ticket_ID=5), (select t.Passenger_Name from ticket t where t.Ticket_ID=5), 'Cancelation', 'Cancelation Confirmed');
+
+
+
+
+
+

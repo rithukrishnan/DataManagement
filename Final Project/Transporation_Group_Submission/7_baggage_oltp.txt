@@ -1,0 +1,115 @@
+-- Baggage OLTP System
+
+drop table ticket_baggage;
+drop table baggage_transaction;
+drop table baggage;
+
+drop sequence baggage_id_seq;
+drop sequence baggage_transaction_id_seq;
+
+-- Creating Sequences for Primary Keys
+
+create sequence baggage_id_seq;
+
+create sequence baggage_transaction_id_seq;
+
+
+
+-- Creating Tables
+
+-- Baggage Table
+create table baggage
+(
+    Baggage_ID              number(10)  default baggage_id_seq.nextval  primary key,
+    Price                   decimal(5)  not null,
+    Weight                  decimal(5)  not null,
+    Fragile_Flag            varchar(1)  not null,
+    Start_Location          varchar(10) not null,
+    Destination_Location    varchar(10) not null
+);
+
+-- Baggage Transaction Table
+create table baggage_transaction
+(
+    Baggage_Transaction_ID  number(10)  default baggage_transaction_id_seq.nextval  primary key,
+    Baggage_ID              number(10)  not null    references baggage(Baggage_ID),
+    Ticket_ID               number(10)  not null,
+    Passenger_Name          varchar(40) not null,
+    Flight_ID               number(10)  not null,
+    Start_Location          varchar(10) not null,
+    Destination_Location    varchar(10) not null,    
+    Current_Location        varchar(10) not null,
+    Transaction_Type        varchar(20) not null
+);
+
+-- Ticket Baggage Table
+create table ticket_baggage
+(
+    Baggage_ID  number(10)  not null    references baggage(Baggage_ID),
+    Ticket_ID   number(10)  not null    references ticket(Ticket_ID),
+    
+    constraint ticket_baggage_PK primary key (Baggage_ID, Ticket_ID)
+);
+
+
+
+
+
+-- Baggage Table Seed Data
+insert into baggage (Baggage_ID, Price, Weight, Fragile_Flag, Start_Location, Destination_Location) values (1, 115.57, 57.47, 'F', 'TTW', 'MZP');
+insert into baggage (Baggage_ID, Price, Weight, Fragile_Flag, Start_Location, Destination_Location) values (2, 49.74, 16.09, 'T', 'TPI', 'GUD');
+insert into baggage (Baggage_ID, Price, Weight, Fragile_Flag, Start_Location, Destination_Location) values (3, 48.28, 14.82, 'T', 'DDD', 'RXE');
+insert into baggage (Baggage_ID, Price, Weight, Fragile_Flag, Start_Location, Destination_Location) values (4, 22.36, 52.94, 'F', 'XIC', 'UNA');
+insert into baggage (Baggage_ID, Price, Weight, Fragile_Flag, Start_Location, Destination_Location) values (5, 123.23, 51.09, 'F', 'TNP', 'STH');
+insert into baggage (Baggage_ID, Price, Weight, Fragile_Flag, Start_Location, Destination_Location) values (6, 23.64, 31.47, 'F', 'WTA', 'KMX');
+insert into baggage (Baggage_ID, Price, Weight, Fragile_Flag, Start_Location, Destination_Location) values (7, 43.56, 18.17, 'F', 'CEO', 'HVK');
+insert into baggage (Baggage_ID, Price, Weight, Fragile_Flag, Start_Location, Destination_Location) values (8, 87.39, 15.2, 'T', 'GHA', 'AYT');
+insert into baggage (Baggage_ID, Price, Weight, Fragile_Flag, Start_Location, Destination_Location) values (9, 113.4, 23.7, 'T', 'VVK', 'MDN');
+insert into baggage (Baggage_ID, Price, Weight, Fragile_Flag, Start_Location, Destination_Location) values (10, 23.12, 54.8, 'F', 'PNP', 'GLT');
+insert into baggage (Baggage_ID, Price, Weight, Fragile_Flag, Start_Location, Destination_Location) values (11, 35.94, 35.99, 'T', 'HUK', 'WOE');
+insert into baggage (Baggage_ID, Price, Weight, Fragile_Flag, Start_Location, Destination_Location) values (12, 101.16, 50.33, 'F', 'XIL', 'SEG');
+insert into baggage (Baggage_ID, Price, Weight, Fragile_Flag, Start_Location, Destination_Location) values (13, 27.3, 16.19, 'T', 'MBI', 'DJG');
+insert into baggage (Baggage_ID, Price, Weight, Fragile_Flag, Start_Location, Destination_Location) values (14, 29.74, 37.22, 'T', 'OMM', 'ODJ');
+insert into baggage (Baggage_ID, Price, Weight, Fragile_Flag, Start_Location, Destination_Location) values (15, 94.42, 48.08, 'F', 'VNA', 'TJV');
+insert into baggage (Baggage_ID, Price, Weight, Fragile_Flag, Start_Location, Destination_Location) values (16, 127.51, 56.08, 'T', 'TEQ', 'SMS');
+insert into baggage (Baggage_ID, Price, Weight, Fragile_Flag, Start_Location, Destination_Location) values (17, 57.36, 37.91, 'T', 'LOK', 'PHW');
+insert into baggage (Baggage_ID, Price, Weight, Fragile_Flag, Start_Location, Destination_Location) values (18, 54.47, 27.07, 'T', 'DRC', 'KCT');
+insert into baggage (Baggage_ID, Price, Weight, Fragile_Flag, Start_Location, Destination_Location) values (19, 49.79, 15.48, 'F', 'OTJ', 'ZBF');
+insert into baggage (Baggage_ID, Price, Weight, Fragile_Flag, Start_Location, Destination_Location) values (20, 80.13, 41.19, 'F', 'YYE', 'PAQ');
+insert into baggage (Baggage_ID, Price, Weight, Fragile_Flag, Start_Location, Destination_Location) values (21, 106.34, 23.26, 'F', 'KVL', 'SVB');
+insert into baggage (Baggage_ID, Price, Weight, Fragile_Flag, Start_Location, Destination_Location) values (22, 56.55, 29.4, 'T', 'CIQ', 'MPE');
+insert into baggage (Baggage_ID, Price, Weight, Fragile_Flag, Start_Location, Destination_Location) values (23, 41.02, 31.15, 'T', 'PLM', 'MJA');
+insert into baggage (Baggage_ID, Price, Weight, Fragile_Flag, Start_Location, Destination_Location) values (24, 101.53, 53.27, 'T', 'TIK', 'NYA');
+insert into baggage (Baggage_ID, Price, Weight, Fragile_Flag, Start_Location, Destination_Location) values (25, 98.14, 48.0, 'F', 'LIB', 'BJA');
+insert into baggage (Baggage_ID, Price, Weight, Fragile_Flag, Start_Location, Destination_Location) values (26, 84.97, 24.15, 'F', 'GXX', 'TED');
+insert into baggage (Baggage_ID, Price, Weight, Fragile_Flag, Start_Location, Destination_Location) values (27, 120.7, 54.87, 'F', 'SXU', 'NGU');
+insert into baggage (Baggage_ID, Price, Weight, Fragile_Flag, Start_Location, Destination_Location) values (28, 91.81, 21.95, 'F', 'YAC', 'TPC');
+insert into baggage (Baggage_ID, Price, Weight, Fragile_Flag, Start_Location, Destination_Location) values (29, 108.53, 32.33, 'F', 'SGG', 'VNA');
+insert into baggage (Baggage_ID, Price, Weight, Fragile_Flag, Start_Location, Destination_Location) values (30, 41.49, 40.65, 'T', 'CWR', 'VUP');
+
+-- Baggage Transaction Table Seed Data
+insert into baggage_transaction (Baggage_Transaction_ID, Baggage_ID, Ticket_ID, Passenger_Name, Flight_ID, Start_Location, Destination_Location, Current_Location, Transaction_Type) values (1, 6, 3, 'Wendall Davydoch', 299, 'PSU', 'BEN', 'CUE', 'Check In');
+insert into baggage_transaction (Baggage_Transaction_ID, Baggage_ID, Ticket_ID, Passenger_Name, Flight_ID, Start_Location, Destination_Location, Current_Location, Transaction_Type) values (2, 1, 4, 'Bryana Faro', 156, 'DMB', 'BFA', 'KNX', 'Unloaded');
+insert into baggage_transaction (Baggage_Transaction_ID, Baggage_ID, Ticket_ID, Passenger_Name, Flight_ID, Start_Location, Destination_Location, Current_Location, Transaction_Type) values (3, 3, 10, 'Mariquilla Gallelli', 263, 'ONG', 'BVK', 'BGH', 'Check In');
+insert into baggage_transaction (Baggage_Transaction_ID, Baggage_ID, Ticket_ID, Passenger_Name, Flight_ID, Start_Location, Destination_Location, Current_Location, Transaction_Type) values (4, 2, 2, 'Deloris Undrell', 112, 'KRE', 'CRX', 'YZY', 'Loaded');
+insert into baggage_transaction (Baggage_Transaction_ID, Baggage_ID, Ticket_ID, Passenger_Name, Flight_ID, Start_Location, Destination_Location, Current_Location, Transaction_Type) values (5, 1, 5, 'Dunc Fadden', 182, 'KUU', 'RNE', 'RPX', 'Check Out');
+insert into baggage_transaction (Baggage_Transaction_ID, Baggage_ID, Ticket_ID, Passenger_Name, Flight_ID, Start_Location, Destination_Location, Current_Location, Transaction_Type) values (6, 9, 8, 'Guss Dumbleton', 225, 'BQD', 'KDA', 'AKM', 'Unloaded');
+insert into baggage_transaction (Baggage_Transaction_ID, Baggage_ID, Ticket_ID, Passenger_Name, Flight_ID, Start_Location, Destination_Location, Current_Location, Transaction_Type) values (7, 9, 4, 'Sergent Gregory', 171, 'YNJ', 'MCY', 'KFG', 'Loaded');
+insert into baggage_transaction (Baggage_Transaction_ID, Baggage_ID, Ticket_ID, Passenger_Name, Flight_ID, Start_Location, Destination_Location, Current_Location, Transaction_Type) values (8, 8, 9, 'Cariotta Vinnick', 231, 'OBO', 'RVO', 'AFR', 'Check In');
+insert into baggage_transaction (Baggage_Transaction_ID, Baggage_ID, Ticket_ID, Passenger_Name, Flight_ID, Start_Location, Destination_Location, Current_Location, Transaction_Type) values (9, 4, 3, 'Renelle Polhill', 175, 'YAD', 'TBB', 'SSR', 'Check In');
+insert into baggage_transaction (Baggage_Transaction_ID, Baggage_ID, Ticket_ID, Passenger_Name, Flight_ID, Start_Location, Destination_Location, Current_Location, Transaction_Type) values (10, 7, 4, 'Winslow Denes', 299, 'PWL', 'DFW', 'BQU', 'Check Out');
+insert into baggage_transaction (Baggage_Transaction_ID, Baggage_ID, Ticket_ID, Passenger_Name, Flight_ID, Start_Location, Destination_Location, Current_Location, Transaction_Type) values (11, 1, 1, 'Obidiah Brolan', 141, 'TCP', 'OLP', 'ATW', 'Unloaded');
+insert into baggage_transaction (Baggage_Transaction_ID, Baggage_ID, Ticket_ID, Passenger_Name, Flight_ID, Start_Location, Destination_Location, Current_Location, Transaction_Type) values (12, 3, 3, 'Jesselyn Mullis', 268, 'SAQ', 'SXF', 'BZH', 'Check In');
+insert into baggage_transaction (Baggage_Transaction_ID, Baggage_ID, Ticket_ID, Passenger_Name, Flight_ID, Start_Location, Destination_Location, Current_Location, Transaction_Type) values (13, 7, 9, 'Hazel Milleton', 140, 'FXO', 'WBD', 'LOV', 'Check In');
+insert into baggage_transaction (Baggage_Transaction_ID, Baggage_ID, Ticket_ID, Passenger_Name, Flight_ID, Start_Location, Destination_Location, Current_Location, Transaction_Type) values (14, 5, 8, 'Davida Gotthard.sf', 244, 'MUE', 'DNR', 'EJH', 'Check In');
+insert into baggage_transaction (Baggage_Transaction_ID, Baggage_ID, Ticket_ID, Passenger_Name, Flight_ID, Start_Location, Destination_Location, Current_Location, Transaction_Type) values (15, 8, 9, 'Hadley MacAlester', 191, 'YIE', 'YEG', 'TMY', 'Check Out');
+
+-- Ticket Baggage Table
+insert into ticket_baggage (Baggage_ID, Ticket_ID) values (1, 1);
+insert into ticket_baggage (Baggage_ID, Ticket_ID) values (2, 2);
+insert into ticket_baggage (Baggage_ID, Ticket_ID) values (3, 3);
+insert into ticket_baggage (Baggage_ID, Ticket_ID) values (4, 4);
+insert into ticket_baggage (Baggage_ID, Ticket_ID) values (5, 5);
+
+
+
